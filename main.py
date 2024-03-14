@@ -21,15 +21,17 @@ OK = 4 * [Peg.BLACK]
 
 
 def feedback(hidden_code: Code, guess: Code) -> List[Peg]:
-    # TODO optimization consideration
+    # TODO optimization consideration: use counter and then 
     hidden_copy: List[Optional[Peg]] = [*hidden_code]
     guess_copy: List[Optional[Peg]] = [*guess]
     result = []
+
     for idx, given in enumerate(guess_copy):
         if hidden_copy[idx] == given:
             result.append(Peg.BLACK)
             hidden_copy[idx] = None
             guess_copy[idx] = None
+
     for idx, given in enumerate(guess_copy):
         if given is not None and given in hidden_copy:
             result.append(Peg.WHITE)
@@ -61,6 +63,7 @@ def get_input() -> Code:
 
 def game(input_func: Callable[[], Code], hidden_code: Code) -> int:
     """Return -1 when the game is lost otherwise return try count on with the game was won."""
+    # TODO decouple presentation from logic using events instead of print
     for try_count in range(1, 11):
         print(f"Tries remaining: {11-try_count}")
         feed = feedback(hidden_code, input_func())
@@ -69,7 +72,7 @@ def game(input_func: Callable[[], Code], hidden_code: Code) -> int:
             print("YOUR GUESS WAS RIGHT!!!")
             return try_count
         print(80 * "=")
-    print("YOU LOST")
+    print(f"YOU LOST, the right answer is: {[e.name for e in hidden_code]}")
     return -1
 
 
